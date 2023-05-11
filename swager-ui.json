@@ -1,0 +1,433 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "My API",
+    "version": "1.0.0",
+    "description": "API для моего приложения"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4444",
+      "description": "Локальный сервер"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Users",
+      "description": "API endpoints related to users"
+    },
+    {
+      "name": "Roles",
+      "description": "API endpoints related to roles"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Create a new user",
+        "operationId": "createUser",
+        "requestBody": {
+          "description": "User object that needs to be created",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/User"
+              },
+              "example": {
+                "email": "example@mail.com",
+                "password": "password123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully"
+          },
+          "400": {
+            "description": "Invalid request payload"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Get a login token",
+        "operationId": "createUser",
+        "requestBody": {
+          "description": "User object that needs to be created",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/User"
+              },
+              "example": {
+                "email": "example@mail.com",
+                "password": "password123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User logged in successfully"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/updateUserRole/{userId}": {
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Update User role",
+        "operationId": "manageRole",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Id of the Role",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "id": "example"
+              }
+            }
+          }
+        },
+
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User updated successfully"
+          },
+          "403": {
+            "description": "You do not have the permissions"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/createRole": {
+      "post": {
+        "tags": [
+          "Roles"
+        ],
+        "description": "Create a role",
+        "operationId": "createRole",
+        "requestBody": {
+          "description": "Id of the endpoint",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Role"
+              },
+              "example": {
+                "name": "example",
+                "allowedEndpoints": "[]"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role created successfully"
+          },
+          "403": {
+            "description": "You do not have the permissions"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/deleteRole/{roleId}": {
+      "delete": {
+        "tags": [
+          "Roles"
+        ],
+        "description": "Delete a role",
+        "operationId": "deleteRole",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "path",
+            "description": "ID of role to Delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role deleted successfully"
+          },
+          "403": {
+            "description": "You do not have the permissions"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/getAllRoles": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "description": "Get all roles",
+        "operationId": "getAllRoles",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roles loaded successfully"
+          },
+          "403": {
+            "description": "You do not have the permissions"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/manageRoles/{roleId}": {
+      "patch": {
+        "tags": [
+          "Roles"
+        ],
+        "description": "Update Allowed modules for a role",
+        "operationId": "manageRole",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Id of the endpoint",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "id": "example"
+              }
+            }
+          }
+        },
+
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "path",
+            "description": "ID of role to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role updated successfully"
+          },
+          "403": {
+            "description": "You do not have the permissions"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/getAllEndpoints": {
+      "get": {
+        "description": "Get all endpoints",
+        "operationId": "getAllRoles",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Endpoints successfully loaded"
+          },
+          "403": {
+            "description": "You do not have the permissions"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/getAllLetters": {
+      "get": {
+        "description": "Get all letters",
+        "operationId": "getAllletters",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Letters successfully loaded"
+          },
+          "403": {
+            "description": "You do not have the permissions"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/getAllNumbers": {
+      "get": {
+        "description": "Get all numbers",
+        "operationId": "getAllnumbers",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Numbers successfully loaded"
+          },
+          "403": {
+            "description": "You do not have the permissions"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/getAllNames": {
+      "get": {
+        "description": "Get all names",
+        "operationId": "getAllNames",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Names successfully loaded"
+          },
+          "403": {
+            "description": "You do not have the permissions"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "email",
+        "password"
+      ]
+    },
+    "Role":{
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "allowedEndpoints": {
+          "type": "array"
+        }
+      }
+    }
+  }
+}
